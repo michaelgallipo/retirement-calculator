@@ -39,6 +39,7 @@ export default {
 	color: #2c3e50;
 	margin-top: 60px;
 }
+
 .headerImage {
 	width: 150px;
 	height: 150px;
@@ -53,10 +54,20 @@ export default {
 	top: 0px;
 	right: 0px;
 }
+
 .title {
 	font-size: 46px;
 	font-weight: bold;
 	text-align: center;
 	font-family: cursive;
+}
+
+@media screen and (max-width: 950px) {
+	.headerImage {
+		position: relative;
+	}
+	#rightImage {
+		display: none;
+	}
 }
 </style>

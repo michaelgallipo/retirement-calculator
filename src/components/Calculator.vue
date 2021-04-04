@@ -215,4 +215,10 @@ label {
 #reset {
 	margin-left: 40px;
 }
+
+@media screen and (max-width: 950px) {
+	h1 {
+		font-size: 26px;
+	}
+}
 </style>
