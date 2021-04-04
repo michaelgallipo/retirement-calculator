@@ -1,6 +1,7 @@
 <template>
 	<div class="calculator">
 		<h1>Please Enter Data to Calculate How Long Your Money Will Last</h1>
+		<h2 id="finalMessage">{{ this.finalMessage }}</h2>
 		<div class="row" id="display">
 			<div id="dataEntry" class="col-sm-5">
 				<div class="form-group row">
@@ -66,6 +67,9 @@
 				<button id="calculate" v-on:click="submit" class="btn btn-primary">
 					Calculate
 				</button>
+				<button id="reset" v-on:click="reset" class="btn btn-warning">
+					Reset
+				</button>
 			</div>
 			<div class="col-sm-6 offset-sm-1" id="caveats">
 				<h5>Assumptions and Caveats</h5>
@@ -82,10 +86,18 @@
 						different
 					</li>
 					<li>Spending deducted at the start of a given year</li>
+					<li>
+						Stock/Bond allocation fixed at 50/50 mix for duration of
+						calculation. Most likely you would want that allocation to change
+						over time
+					</li>
+					<li>
+						Equity return calculated at 9.5%/year (long term stock market
+						average) and bond return calculated at 4%.
+					</li>
 				</ul>
 			</div>
 		</div>
-		<h2>{{ this.finalMessage }}</h2>
 	</div>
 </template>
 
@@ -121,11 +133,12 @@ export default {
 			console.log(years, this.addSavings);
 			let x;
 			for (x = 0; x < years; x++) {
-				this.assets =
+				let newTotal =
 					this.assets * this.equityPct * (1 + this.equityReturn) +
 					this.assets * this.bondPct * (1 + this.bondReturn) +
-					this.addSavings;
-				console.log(this.assets);
+					parseInt(this.addSavings);
+				console.log(newTotal);
+				this.assets = newTotal;
 			}
 			return this.assets;
 		},
@@ -133,15 +146,14 @@ export default {
 			this.moneyAge = this.retirementAge;
 			console.log(this.moneyAge);
 			while (this.assets > 0) {
-				this.assets = this.assets - this.spending;
+				this.assets = this.assets - this.spending / (1 - this.taxRate);
 				// console.log(this.assets);
-				let equityGain = this.assets * this.equityPct * (1 + this.equityReturn);
-				console.log(equityGain);
-				this.assets =
+				let newTotal =
 					this.assets * this.equityPct * (1 + this.equityReturn) +
 					this.assets * this.bondPct * (1 + this.bondReturn);
 				this.moneyAge++;
-				// console.log(this.assets, this.moneyAge);
+				this.assets = newTotal;
+				console.log(this.assets, this.moneyAge);
 				if (this.moneyAge > 99) {
 					console.log("you have enough money", this.assets);
 					this.finalMessage =
@@ -151,8 +163,18 @@ export default {
 			}
 			console.log(this.moneyAge);
 			this.finalMessage =
-				"Based on the information given, you will run out of money at age {{this.moneyAge}}";
+				"Based on the information given, you will run out of money at age " +
+				this.moneyAge;
 			return this.finalMessage;
+		},
+		reset: function() {
+			this.assets = "";
+			this.retirementAge = "";
+			this.addSavings = "";
+			this.spending = "";
+			this.age = "";
+			this.retirementAge = "";
+			this.finalMessage = "";
 		},
 	},
 };
@@ -186,5 +208,11 @@ label {
 #caveatList {
 	text-align: left;
 	font-size: 18px;
+}
+#finalMessage {
+	color: navy;
+}
+#reset {
+	margin-left: 40px;
 }
 </style>
